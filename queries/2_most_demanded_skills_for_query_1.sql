@@ -1,8 +1,7 @@
 /*
-What are the most in-demand skills for data analysts?
+What are the most in-demand skills for data analysts from query 1?
 - Join job postings to inner join table.
 - Identify the all in-demand skills for a data analyst where the count is >= 5.
-- Focus on job postings from query 1.
 */
 
 
