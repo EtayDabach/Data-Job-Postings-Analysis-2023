@@ -1,0 +1,30 @@
+/*
+How many junior data jobs are posted each month?
+- Group and order by month.
+*/
+
+
+WITH domestic_junior_data_jobs AS (
+    SELECT
+        jpf.*,  -- Select all columns from job_postings_fact
+        cd.name AS company_name
+    FROM job_postings_fact AS jpf
+    INNER JOIN company_dim AS cd ON jpf.company_id = cd.company_id
+WHERE
+    job_country = 'Israel'
+    AND (
+        job_title NOT LIKE '%Senior%'
+        AND job_title NOT LIKE '%Sr%'
+        AND job_title NOT LIKE '%Lead%'
+        AND job_title NOT LIKE '%Principal%'
+        AND job_title NOT LIKE '%Manager%'
+        AND job_title NOT LIKE '%Director%'
+    )
+)
+
+SELECT 
+    EXTRACT(MONTH FROM djd.job_posted_date::DATE) AS post_month,
+    COUNT(djd.job_id) AS job_count 
+FROM domestic_junior_data_jobs AS djd
+GROUP BY post_month
+ORDER BY post_month;
