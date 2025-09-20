@@ -14,7 +14,7 @@ Analyzing data (and software engineering) job postings from 2023 based on data c
 ## The Analysis 
 **Will be added soon**
 
-'''sql
+```sql
 WITH domestic_junior_data_jobs AS (
     SELECT
         jpf.*,  -- Select all columns from job_postings_fact
@@ -44,9 +44,9 @@ HAVING
     COUNT(sd.skill_id) >= 5
 ORDER BY
     demand_count DESC
-'''
+```
 
-![top 10 most demanded skills](assets\imgs\4_top_10_most_demanded_skills_for_domestic_junior_data_jobs_barh.png)
+![top 10 most demanded skills for domestic junior](assets/imgs/4_top_10_most_demanded_skills_for_domestic_junior_data_jobs_barh.png)
 
 
 ## Insights
