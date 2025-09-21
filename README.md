@@ -85,8 +85,95 @@ So lets assume that about 5 different skills is required per job
 - **Git**
 
 ## The Analysis 
-**Will be added soon**
 
+This analysis was focus mainly on junior jobs in Israel (domestic).
+
+The main custom table for most of the analysis (domestic) was:
+```sql
+WITH domestic_junior_data_jobs AS (
+    SELECT
+        jpf.*,  -- Select all columns from job_postings_fact
+        cd.name AS company_name
+    FROM job_postings_fact AS jpf
+    INNER JOIN company_dim AS cd ON jpf.company_id = cd.company_id
+WHERE
+    job_country = 'Israel'
+    AND (
+        job_title NOT LIKE '%Senior%'
+        AND job_title NOT LIKE '%Sr%'
+        AND job_title NOT LIKE '%Lead%'
+        AND job_title NOT LIKE '%Principal%'
+        AND job_title NOT LIKE '%Manager%'
+        AND job_title NOT LIKE '%Director%'
+    )
+)
+
+SELECT * FROM domestic_junior_data_jobs LIMIT 5;
+```
+And the result is
+
+| Job ID | Company Name | Job Title Short   | Job Title                                       | Location             | Via             | Schedule  | Remote | No Degree Mention | Posted Date          |
+|--------|--------------|------------------|-------------------------------------------------|----------------------|-----------------|-----------|--------|------------------|----------------------|
+| 342    | VAST Data    | Cloud Engineer   | Customer Success Engineer                       | Tel Aviv-Yafo, Israel | via VAST Data   | Full-time | false     | false               | 2023-03-22 17:50:08 |
+| 437    | ADAMA        | Business Analyst | Strategic programs and Business analytics manager | Tel Aviv-Yafo, Israel | via Trabajo.org | Full-time | false     | false               | 2023-03-26 22:35:16 |
+| 677    | ZipRecruiter | Data Engineer    | Big Data Engineer                               | Tel Aviv-Yafo, Israel | via LinkedIn    | Full-time | false     | false               | 2023-06-11 12:43:17 |
+| 688    | Passportcard | Business Analyst | BI Analyst                                      | Netanya, Israel       | via Comeet      | Full-time | false     | false               | 2023-05-03 07:50:33 |
+| 939    | CHEQ         | Data Engineer    | Backend & Data Engineer                         | Tel Aviv-Yafo, Israel | via LinkedIn    | Full-time | false     | true               | 2023-04-27 07:36:08 |
+
+with **3263** different posts, all in Israel.
+
+1. Job Types
+What is the job type with the most postings?
+
+```sql
+WITH domestic_junior_data_jobs AS (
+    SELECT
+        jpf.*,  -- Select all columns from job_postings_fact
+        cd.name AS company_name
+    FROM job_postings_fact AS jpf
+    INNER JOIN company_dim AS cd ON jpf.company_id = cd.company_id
+WHERE
+    job_country = 'Israel'
+    AND (
+        job_title NOT LIKE '%Senior%'
+        AND job_title NOT LIKE '%Sr%'
+        AND job_title NOT LIKE '%Lead%'
+        AND job_title NOT LIKE '%Principal%'
+        AND job_title NOT LIKE '%Manager%'
+        AND job_title NOT LIKE '%Director%'
+    )
+)
+
+SELECT 
+    djd.job_title_short,
+    COUNT(djd.job_id) AS job_postings_count
+FROM domestic_junior_data_jobs AS djd
+GROUP BY djd.job_title_short
+ORDER BY job_postings_count DESC;
+```
+The output is:
+
+| Job Title Short           | Job Postings Count |
+|---------------------------|------------------|
+| Data Analyst              | 819              |
+| Data Engineer             | 700              |
+| Data Scientist            | 548              |
+| Software Engineer         | 523              |
+| Business Analyst          | 393              |
+| Machine Learning Engineer | 178              |
+| Cloud Engineer            | 97               |
+| Senior Data Scientist     | 4                |
+| Senior Data Engineer      | 1                |
+
+As you can see, there are a few senior job postings that were misclassified as junior because my filter was based on the job_title column only. This can be fixed easily by adding another line to the WHERE statement to include the job_title_short (job_title_short NOT LIKE '%Senior%'), but this error was revealed to me later on the analysis and after noticing it I decided to continue with the already existing outputs because all the misclassified senior job are accumulating to 5 postings which is **less than 1%** of the total postings (5/3263) which is not impactful to the analysis in this repository. The average salary per type could not be calculated with accuracy for this table because only about 60 postings is valid for the calculation, which is **about 2%** of the total postings.
+
+This bar graph shows only the junior job postings without the misclassified seniors:
+
+![job types count](assets/imgs/8_most_data_jobs_type_for_domestic_junior_data_jobs_barh.png)
+
+
+
+<!--
 ```sql
 WITH domestic_junior_data_jobs AS (
     SELECT
@@ -118,9 +205,11 @@ HAVING
 ORDER BY
     demand_count DESC
 ```
+-->
 
+<!--
 ![top 10 most demanded skills for domestic junior](assets/imgs/4_top_10_most_demanded_skills_for_domestic_junior_data_jobs_barh.png)
-
+-->
 
 ## Insights
 **Will be added soon**
