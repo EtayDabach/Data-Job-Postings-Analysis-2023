@@ -122,7 +122,8 @@ And the result is
 
 with **3263** different posts, all in Israel.
 
-1. Job Types
+### 1. Job Types
+
 What is the job type with the most postings?
 
 ```sql
@@ -171,6 +172,51 @@ This bar graph shows only the junior job postings without the misclassified seni
 
 ![job types count](assets/imgs/8_most_data_jobs_type_for_domestic_junior_data_jobs_barh.png)
 
+### 2. Most In Demand skills
+
+What is the most in demand skills for juniors?
+
+With the same table, domestic_junior_data_jobs:
+
+```sql
+SELECT 
+    sd.skills,
+    COUNT(sd.skill_id) AS demand_count
+FROM domestic_junior_data_jobs AS djd
+INNER JOIN skills_job_dim AS sjd ON djd.job_id = sjd.job_id
+INNER JOIN skills_dim AS sd ON sjd.skill_id = sd.skill_id
+GROUP BY sd.skills
+HAVING
+    COUNT(sd.skill_id) >= 5
+ORDER BY
+    demand_count DESC
+```
+
+The top 10 most in demand skills are:
+
+| Skill      | Demand Count |
+|------------|--------------|
+| sql        | 1692         |
+| python     | 1691         |
+| aws        | 656          |
+| tableau    | 503          |
+| spark      | 406          |
+| excel      | 379          |
+| java       | 283          |
+| airflow    | 279          |
+| kafka      | 275          |
+| kubernetes | 262          |
+
+![top 10 most in demand skills](assets/imgs/4_top_10_most_demanded_skills_for_domestic_junior_data_jobs_barh.png)
+
+SQL and Python are at the top of the list, with **about 52%** of job postings mentioning them as a requirement. Amazon Web Services (AWS), Tableau, and (Apache) Spark are mentioned in 12%-20% of job postings. This is no coincidence, most of the skills on the list work well with SQL and Python as an easy and efficient tool to use. For example, Python is one of the most popular programming languages ​​in the world and almost every framework/tool/service has a Python-compatible API (libraries/packages) like pyspark for Spark or airflow. Most companies today use cloud services from one of the top three providers: AWS, Microsoft Azure, or Google Cloud. Together, they hold about **63%** of the global cloud infrastructure market share, with AWS leading the market with **30%**.
+On average, each job posting listed about 5 skills required for the job, so by examining the data, it is best to learn the top 5 skills to increase your chances of getting a job in this field.
+
+<!-- SQL and Python are at the top of the list, with **about 52%** of job postings listing them as a requirement. Amazon Web Services (AWS), Tableau, and (Apache) Spark are mentioned in 12%-20% of job postings. This is not random, most of the skills in the list works well with SQL and Python as a tools to use them easily and efficiently. For example, Python is one of the most popular programming language in the world and almost every framework/tool/service has an API compacable with Python (libraries/packeges) such as pyspark for Spark or airflow. Most companies today use cloud services from one of the top 3 providers: AWS, Microsoft Azure or Google Cloud. Together, they hold about **63%** market share in the global cloud infrastructure mark and AWS is the market leader with **30%**.
+On average, each job posting listed about 5 skills required for the job, so by examining the data, it is best to learn the top 5 skills to increase your chances of getting a job in this field. -->
+
+
+<!--, and when you think about it, it really makes sense that something like SQL and Python are on the top of the list and tools like .-->
 
 
 <!--
