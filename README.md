@@ -122,29 +122,11 @@ And the result is
 
 with **3263** different posts, all in Israel.
 
-### 1. Job Types
+### 1. [Job Types](queries/8_most_data_type_job_for_query_3.sql)
 
 What is the job type with the most postings?
 
 ```sql
-WITH domestic_junior_data_jobs AS (
-    SELECT
-        jpf.*,  -- Select all columns from job_postings_fact
-        cd.name AS company_name
-    FROM job_postings_fact AS jpf
-    INNER JOIN company_dim AS cd ON jpf.company_id = cd.company_id
-WHERE
-    job_country = 'Israel'
-    AND (
-        job_title NOT LIKE '%Senior%'
-        AND job_title NOT LIKE '%Sr%'
-        AND job_title NOT LIKE '%Lead%'
-        AND job_title NOT LIKE '%Principal%'
-        AND job_title NOT LIKE '%Manager%'
-        AND job_title NOT LIKE '%Director%'
-    )
-)
-
 SELECT 
     djd.job_title_short,
     COUNT(djd.job_id) AS job_postings_count
@@ -172,7 +154,8 @@ This bar graph shows only the junior job postings without the misclassified seni
 
 ![job types count](assets/imgs/8_most_data_jobs_type_for_domestic_junior_data_jobs_barh.png)
 
-### 2. Most In Demand skills
+### 2. [Most In Demand Skills](queries/4_most%demanded_skills_for_query_3.sql)
+<!-- 2. [Most In Demand Skills](queries/'4_most demanded_skills_for_query_3'.sql)-->
 
 What is the most in demand skills for juniors?
 
@@ -219,6 +202,78 @@ On average, each job posting listed about 5 skills required for the job, so by e
 <!--, and when you think about it, it really makes sense that something like SQL and Python are on the top of the list and tools like .-->
 
 
+
+### 3. [Job Postings Per Month](queries/5_job_postings_per_month_for_query_3.sql)
+
+How many junior job postings are posted each month?
+
+```sql
+SELECT 
+    EXTRACT(MONTH FROM djd.job_posted_date::DATE) AS post_month,
+    COUNT(djd.job_id) AS job_count 
+FROM domestic_junior_data_jobs AS djd
+GROUP BY post_month
+ORDER BY post_month;
+```
+
+The output is:
+
+| Month | Job Count |
+|-------|-----------|
+| 1     | 532       |
+| 2     | 316       |
+| 3     | 315       |
+| 4     | 310       |
+| 5     | 276       |
+| 6     | 251       |
+| 7     | 245       |
+| 8     | 234       |
+| 9     | 179       |
+| 10    | 152       |
+| 11    | 234       |
+| 12    | 219       |
+
+
+![job postings per month](assets/imgs/5_job_postings_per_month_for_domestic_junior_data_jobs_scatter.png)
+
+Most job postings are published in the first quarter of the year (1, 2, 3) with **about 35%** of all posts, most of which are published in January.
+So if you are looking for a job, you should know that most jobs are advertised in the first quarter of the year.
+
+
+### 4. [Most Popular Posting Sites](queries/7_most_popular_postings_sites_for_query_3.sql)
+
+What is the most popular job posting sites for juniors?
+
+```sql
+SELECT 
+    REPLACE(djd.job_via, 'via ','') AS postings_site,
+    COUNT(djd.job_id) AS job_postings_count 
+FROM domestic_junior_data_jobs AS djd
+GROUP BY postings_site
+ORDER BY job_postings_count DESC
+```
+
+The top 10 most popular postings sites are:
+
+| Posting Site                 | Job Postings Count |
+|------------------------------|--------------------|
+| LinkedIn                     | 1867               |
+| Trabajo.org                  | 429                |
+| Comeet                       | 311                |
+| Ai-Jobs.net                  | 59                 |
+| Mploy דרושים                 | 45                 |
+| The Muse                     | 42                 |
+| Recruit.net                  | 35                 |
+| Startup Jobs                 | 32                 |
+| BeBee Israel                 | 29                 |
+| SmartRecruiters Job Search   | 28                 |
+
+
+<!--![top 10 most popular posting sites](assets/imgs/7_top_10_most_popular_postings_sites_for_domestic_junior_data_jobs_barh.png)-->
+<img width="1014" height="545" alt="7_top_10_most_popular_postings_sites_for_domestic_junior_data jobs_barh" src="https://github.com/user-attachments/assets/a8964dcf-8708-48fa-84d3-bb8547f1fd98" />
+
+LinkedIn is by far the most popular advertising site for junior positions, with **about 57%** of all junior job posts.
+
 <!--
 ```sql
 WITH domestic_junior_data_jobs AS (
@@ -257,5 +312,5 @@ ORDER BY
 ![top 10 most demanded skills for domestic junior](assets/imgs/4_top_10_most_demanded_skills_for_domestic_junior_data_jobs_barh.png)
 -->
 
-## Insights
-**Will be added soon**
+<!--## Insights
+**Will be added soon**-->
